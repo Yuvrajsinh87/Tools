@@ -1,364 +1,2067 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ITI Mechanic Diesel - Realistic Workshop Tools Simulator</title>
-  <style>
-    :root {
-      --primary: #0f172a;
-      --accent: #2563eb;
-      --bg: #f8fafc;
-      --card: #ffffff;
-      --text: #1e293b;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ITI Mechanic Diesel — Tool Library</title>
+
+<style>
+:root{
+    --bg:#f4f6f8;
+    --card:#ffffff;
+    --text:#182027;
+    --muted:#68737c;
+    --line:#dfe4e8;
+    --red:#c62828;
+    --dark:#263238;
+    --shadow:0 8px 25px rgba(0,0,0,.08);
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+/* HEADER */
+
+header{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:22px 18px 18px;
+    position:sticky;
+    top:0;
+    z-index:20;
+    box-shadow:0 2px 10px rgba(0,0,0,.04);
+}
+
+.container{
+    max-width:1400px;
+    margin:auto;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.logo{
+    width:55px;
+    height:55px;
+    border-radius:14px;
+    background:#20262a;
+    color:#fff;
+    display:grid;
+    place-items:center;
+    font-size:27px;
+}
+
+h1{
+    font-size:clamp(22px,3vw,34px);
+    font-weight:800;
+}
+
+.subtitle{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:5px;
+}
+
+/* SEARCH */
+
+.controls{
+    margin-top:18px;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+}
+
+.search{
+    width:100%;
+    height:48px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:0 16px;
+    font-size:16px;
+    outline:none;
+    background:#fff;
+}
+
+.search:focus{
+    border-color:#888;
+}
+
+/* FILTERS */
+
+.filters{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.filter{
+    border:1px solid var(--line);
+    background:#fff;
+    padding:10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:13px;
+    transition:.2s;
+}
+
+.filter:hover,
+.filter.active{
+    background:var(--dark);
+    color:#fff;
+    border-color:var(--dark);
+}
+
+/* MAIN */
+
+main{
+    padding:26px 18px 50px;
+}
+
+.stats{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.stat{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:9px 13px;
+    color:#56616a;
+    font-size:13px;
+}
+
+/* GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fill,minmax(245px,1fr));
+    gap:17px;
+}
+
+/* CARD */
+
+.card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 3px 15px rgba(0,0,0,.045);
+    cursor:pointer;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:var(--shadow);
+}
+
+/* PHOTO */
+
+.photo{
+    height:190px;
+    background:#eef1f3;
+    display:grid;
+    place-items:center;
+    position:relative;
+    overflow:hidden;
+}
+
+.photo img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    display:none;
+    background:#f4f5f6;
+}
+
+.photo-label{
+    color:#7c878f;
+    font-size:12px;
+}
+
+.category-badge{
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:rgba(255,255,255,.95);
+    border:1px solid #ddd;
+    border-radius:7px;
+    padding:5px 8px;
+    font-size:10px;
+    font-weight:bold;
+    z-index:2;
+}
+
+/* CARD CONTENT */
+
+.card-body{
+    padding:14px;
+}
+
+.category{
+    color:var(--red);
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:bold;
+}
+
+.tool-name{
+    font-size:18px;
+    font-weight:800;
+    margin:6px 0;
+}
+
+.description{
+    color:var(--muted);
+    font-size:13px;
+    line-height:1.45;
+    min-height:38px;
+}
+
+.tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    margin-top:10px;
+}
+
+.tag{
+    background:#f0f2f4;
+    padding:5px 7px;
+    border-radius:6px;
+    font-size:10px;
+    color:#58636b;
+}
+
+/* EMPTY */
+
+.empty{
+    grid-column:1/-1;
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+}
+
+/* MODAL */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.65);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+    z-index:100;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(950px,100%);
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:20px;
+}
+
+.modal-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.modal-image{
+    min-height:350px;
+    background:#f1f3f4;
+    display:grid;
+    place-items:center;
+    position:relative;
+}
+
+.modal-image img{
+    width:100%;
+    height:100%;
+    max-height:500px;
+    object-fit:contain;
+}
+
+.modal-info{
+    padding:28px;
+}
+
+.close{
+    float:right;
+    width:38px;
+    height:38px;
+    border:none;
+    border-radius:50%;
+    background:#eef1f3;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.modal-category{
+    color:var(--red);
+    font-size:12px;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+
+.modal-title{
+    font-size:30px;
+    margin:8px 0 15px;
+}
+
+.modal-description{
+    color:#59646c;
+    line-height:1.6;
+}
+
+.specs{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:20px;
+}
+
+.spec{
+    border:1px solid var(--line);
+    padding:11px;
+    border-radius:10px;
+    font-size:13px;
+}
+
+.spec b{
+    display:block;
+    color:#7c858c;
+    font-size:10px;
+    margin-bottom:4px;
+}
+
+.source{
+    margin-top:16px;
+    color:#78828a;
+    font-size:11px;
+}
+
+/* FOOTER */
+
+footer{
+    max-width:1400px;
+    margin:auto;
+    padding:0 18px 35px;
+    color:#77828a;
+    font-size:12px;
+}
+
+/* MOBILE */
+
+@media(max-width:760px){
+
+    header{
+        position:relative;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-
-    header { text-align: center; margin-bottom: 25px; }
-    h1 { color: var(--accent); font-size: 2rem; margin-bottom: 8px; }
-    .subtitle { color: #64748b; font-size: 1.1rem; margin-bottom: 12px; }
-    
-    .credit-badge {
-      display: inline-block;
-      background: #dbeafe;
-      color: #1e40af;
-      font-weight: bold;
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-size: 1rem;
-      border: 1px solid #bfdbfe;
-      margin-bottom: 15px;
+    .grid{
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+        gap:10px;
     }
 
-    /* Controls & Filters */
-    .controls { max-width: 1200px; margin: 0 auto 25px auto; display: flex; flex-direction: column; gap: 15px; align-items: center; }
-    .search-box { width: 100%; max-width: 500px; padding: 12px 20px; border: 2px solid #cbd5e1; border-radius: 25px; font-size: 1rem; outline: none; transition: 0.3s; }
-    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(37,99,235,0.2); }
-
-    .filter-group { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-    .filter-btn { background: #e2e8f0; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
-    .filter-btn.active, .filter-btn:hover { background: var(--accent); color: white; }
-
-    /* Tools Grid Layout */
-    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-    
-    .tool-card {
-      background: var(--card);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      border: 1px solid #e2e8f0;
+    .photo{
+        height:150px;
     }
-    .tool-card:hover { transform: translateY(-6px); box-shadow: 0 12px 25px rgba(0,0,0,0.15); border-color: var(--accent); }
 
-    .img-container { width: 100%; height: 180px; overflow: hidden; background: #e2e8f0; position: relative; }
-    .img-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
-    .tool-card:hover .img-container img { transform: scale(1.05); }
+    .tool-name{
+        font-size:15px;
+    }
 
-    .card-content { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-    .tool-title { font-size: 1.15rem; font-weight: bold; color: var(--primary); margin-bottom: 6px; }
-    .tool-cat { display: inline-block; align-self: flex-start; font-size: 0.75rem; background: #e0f2fe; color: #0369a1; padding: 3px 10px; border-radius: 12px; font-weight: bold; margin-bottom: 10px; }
-    .tool-short { font-size: 0.9rem; color: #475569; line-height: 1.4; }
+    .description{
+        font-size:12px;
+    }
 
-    /* Modal Pop-up Window */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; padding: 20px; z-index: 1000; }
-    .modal-content { background: white; width: 100%; max-width: 600px; border-radius: 16px; overflow: hidden; position: relative; animation: fadeIn 0.3s ease; max-height: 90vh; overflow-y: auto; }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
-    
-    .close-btn { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); color: white; border: none; font-size: 1.3rem; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; z-index: 10; }
-    .modal-hero { width: 100%; height: 260px; overflow: hidden; }
-    .modal-hero img { width: 100%; height: 100%; object-fit: cover; }
+    .modal-grid{
+        grid-template-columns:1fr;
+    }
 
-    .modal-body { padding: 22px; font-size: 0.98rem; line-height: 1.6; color: #334155; }
-    .modal-title { font-size: 1.5rem; color: var(--primary); margin-bottom: 6px; }
-    .modal-cat { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; margin-bottom: 15px; }
-    .modal-body h4 { color: var(--accent); margin: 14px 0 5px 0; font-size: 1.05rem; }
-    
-    footer { text-align: center; margin-top: 40px; padding: 20px; background: var(--primary); color: white; border-radius: 10px; font-size: 1rem; font-weight: 500; }
-  </style>
+    .modal-image{
+        min-height:250px;
+    }
+
+    .modal-title{
+        font-size:25px;
+    }
+}
+
+@media(max-width:430px){
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .photo{
+        height:210px;
+    }
+}
+</style>
 </head>
+
+
 <body>
 
-  <header>
-    <h1>⚙️ ITI મેકેનિક ડીઝલ - ઓરિજિનલ વર્કશોપ ટૂલ્સ સિમ્યુલેટર</h1>
-    <p class="subtitle">વાસ્તવિક ચિત્રો (HD Photos), સચોટ ઉપયોગ અને સિલેબસ વિગતો</p>
-    <div class="credit-badge">👨‍🏫 Created by Yuvrajsinh Kosamia, Mechanic Diesel, ITI Ankleshwar</div>
-  </header>
+<header>
 
-  <div class="controls">
-    <input type="text" class="search-box" id="searchBox" placeholder="🔍 ટૂલનું નામ શોધો (उदा. Hammer, Plier, Torque Wrench)..." oninput="filterData()">
-    <div class="filter-group">
-      <button class="filter-btn active" onclick="setCategory('all', event)">બધા ટૂલ્સ (All)</button>
-      <button class="filter-btn" onclick="setCategory('Hand Tools', event)">હેન્ડ ટૂલ્સ (Hand Tools)</button>
-      <button class="filter-btn" onclick="setCategory('Power Tools', event)">પાવર ટૂલ્સ (Power)</button>
-      <button class="filter-btn" onclick="setCategory('Measuring Tools', event)">મેઝરિંગ (Measuring)</button>
-      <button class="filter-btn" onclick="setCategory('Marking Tools', event)">માર્કિંગ (Marking)</button>
-      <button class="filter-btn" onclick="setCategory('Cutting Tools', event)">કટિંગ ટૂલ્સ (Cutting)</button>
-    </div>
-  </div>
+<div class="container">
 
-  <div class="tools-grid" id="toolsGrid"></div>
+<div class="brand">
 
-  <!-- Interactive Detail Modal -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeModal()">✕</button>
-      <div class="modal-hero" id="mHero"></div>
-      <div class="modal-body">
-        <h2 class="modal-title" id="mTitle"></h2>
-        <span class="modal-cat" id="mCat"></span>
-        <h4>📌 મુખ્ય ઉપયોગ (Primary Application):</h4>
-        <p id="mUsage"></p>
-        <h4>🔧 વર્કશોપ સિમ્યુલેશન ગાઇડ (How to Use):</h4>
-        <p id="mHowTo"></p>
-        <h4>💡 ITI પરીક્ષા માટે યાદ રાખવાની ટીપ:</h4>
-        <p id="mTip" style="background:#fef3c7; padding:10px 14px; border-left:4px solid #d97706; border-radius:4px; margin-top:6px;"></p>
-      </div>
-    </div>
-  </div>
+<div class="logo">
+🔧
+</div>
 
-  <footer>
-    Created by Yuvrajsinh Kosamia, Mechanic Diesel, ITI Ankleshwar
-  </footer>
+<div>
 
-  <script>
-    const toolsData = [
-      // --- HAND TOOLS ---
-      {
-        id: 1,
-        title: "બોલ પિન હેમર (Ball Peen Hammer)",
-        category: "Hand Tools",
-        short: "ચિપિંગ, રિવેટિંગ અને જનરલ વર્કશોપ કાર્યો માટે.",
-        usage: "ડીઝલ વર્કશોપમાં ચીઝલ પર ફટકો મારવા, રિવેટિંગ કરવા અને ધાતુની શીટને શેપ આપવા વપરાય છે.",
-        howto: "હેમરના હાથાને છેડેથી પકડો જેથી મહત્તમ ટોર્ક અને ફટકો મળે.",
-        tip: "હેમરની સાઈઝ તેના વજન (દા.ત. 250g, 500g, 750g) પરથી નક્કી થાય છે.",
-        img: "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 2,
-        title: "કોમ્બિનેશન પ્લાયર (Combination Pliers)",
-        category: "Hand Tools",
-        short: "પકડવા, વાળવા અને વાયર કાપવા માટે બહુઉપયોગી ટૂલ.",
-        usage: "નાના પાર્ટ્સ પકડવા, કોટર પિન વાળવા કે બહાર કાઢવા અને વાયરીંગ કટ કરવા.",
-        howto: "જડબાં (Jaws) વડે પાર્ટ મજબૂત પકડીને ઓપરેટ કરો.",
-        tip: "લાઈવ ઈલેક્ટ્રિક વાયર કાપતી વખતે ઈન્સ્યુલેશન ચકાસી લેવું.",
-        img: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 3,
-        title: "ટોર્ક રેન્ચ (Click-Type Torque Wrench)",
-        category: "Hand Tools",
-        short: "સિલિન્ડર હેડ બોલ્ટ ચોક્કસ ટોર્ક સાથે ટાઈટ કરવા.",
-        usage: "ડીઝલ એન્જિનના સિલિન્ડર હેડ, કનેક્ટિંગ રોડ અને મેન બેરિંગ કેપ બોલ્ટને કંપનીના સ્પેસિફિકેશન મુજબ Nm માં ટાઈટ કરવા.",
-        howto: "હેન્ડલ સેટ કરી બોલ્ટ ટાઈટ કરો, 'ક્લિક' અવાજ આવે એટલે ટાઈટનિંગ અટકાવી દો.",
-        tip: "ક્યારેય આનાથી બોલ્ટ ખોલવા નહીં.",
-        img: "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 4,
-        title: "ઓપન એન્ડેડ અને રિંગ સ્પેનર સેટ",
-        category: "Hand Tools",
-        short: "નટ અને બોલ્ટ ફિટિંગ માટે પ્રાથમિક ટૂલ.",
-        usage: "એન્જિન માઉન્ટિંગ, મેનિફોલ્ડ અને બોડી બોલ્ટ્સ ખોલવા કે ટાઈટ કરવા.",
-        howto: "બોલ્ટ હેડની સાચી સાઈઝ (mm) નો જ સ્પેનર વાપરવો જેથી હેડ સ્લિપ ન થાય.",
-        tip: "રિંગ સ્પેનર વધુ ગ્રીપ આપે છે.",
-        img: "https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 5,
-        title: "સોકેટ સેટ અને રેટચેટ handle",
-        category: "Hand Tools",
-        short: "ઝડપી ઓવરહોલિંગ અને બોલ્ટિંગ માટે.",
-        usage: "એન્જિન બ્લોક અને ઓઇલ સમ્પના ઘણા બધા બોલ્ટ ઝડપથી ખોલવા/ટાઈટ કરવા.",
-        howto: "રેટચેટની દિશા (CW/CCW) નો સ્વિચ સેટ કરીને સોકેટ લગાવી વાપરો.",
-        tip: "ઊંડાણ વાળી જગ્યાએ એક્સટેન્શન બાર વાપરવો.",
-        img: "https://images.unsplash.com/photo-1618090584126-129cd1f3fbae?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 6,
-        title: "ગિયર એન્ડ બેરિંગ પુલર (Three-Jaw Puller)",
-        category: "Hand Tools",
-        short: "શાફ્ટ પરથી ગિયર, બેરિંગ કે પુલી બહાર કાઢવા.",
-        usage: "ક્રેંકશાફ્ટ ગિયર, કેમશાફ્ટ પુલી કે વોટર પમ્પ બેરિંગ ડેમેજ કર્યા વગર ડિસ્મેન્ટલ કરવા.",
-        howto: "ત્રણેય જડબાંને ગિયર પાછળ સેટ કરી સેન્ટર બોલ્ટને સ્પેનરથી ફેરવો.",
-        tip: "હથોડીથી ઠોકવા કરતા પુલર વાપરવું સુરક્ષિત છે.",
-        img: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=600&q=80"
-      },
+<h1>
+ITI Mechanic Diesel — Tool Library
+</h1>
 
-      // --- POWER TOOLS ---
-      {
-        id: 7,
-        title: "ઇમ્પેક્ટ રેન્ચ (Pneumatic Impact Wrench)",
-        category: "Power Tools",
-        short: "હવાના દબાણથી જામ થયેલા બોલ્ટ ક્ષણોમાં ખોલવા.",
-        usage: "ફ્લાયવ્હીલ બોલ્ટ, વ્હીલ નટ અને એન્જિન ડેમ્પ ૨ મિનિટમાં ખોલવા.",
-        howto: "એર હોસ કનેક્ટ કરી કાળો ઈમ્પેક્ટ સોકેટ ચડાવી ટ્રિગર દબાવો.",
-        tip: "આમાં સાદા ક્રોમ સોકેટ વાપરવા નહીં, તૂટી શકે છે.",
-        img: "https://images.unsplash.com/photo-1572981779307-38b8cabb2407?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 8,
-        title: "એન્ગલ ગ્રાઇન્ડર (Angle Grinder)",
-        category: "Power Tools",
-        short: "ધાતુ કાપવા અને વેલ્ડીંગ સરફેસ ઘસવા.",
-        usage: "પાઇપ કટિંગ, મેટલ ક્લીનિંગ અને ચેમ્ફરિંગ કરવા.",
-        howto: "સેફ્ટી ગાર્ડ ઓન રાખીને ચશ્મા પહેરીને ઓપરેટ કરવું.",
-        tip: "ગ્રાઇન્ડિંગ વ્હીલ કટિંગ માટે અને કટિંગ વ્હીલ ઘસવા માટે ન વાપરવું.",
-        img: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=600&q=80"
-      },
+<div class="subtitle">
+Authentic Tool Reference • Hand • Measuring • Marking • Cutting • Power
+</div>
 
-      // --- MEASURING TOOLS ---
-      {
-        id: 9,
-        title: "વર્નિયર કેલિપર (Precision Vernier Caliper)",
-        category: "Measuring Tools",
-        short: "આંતરિક, બહારી વ્યાસ અને ઊંડાઈ માપવા.",
-        usage: "પિસ્ટન ડાયામીટર, સિલિન્ડર લાઇનર અને પિસ્ટન પિન બોરનું માપ લેવું.",
-        howto: "મેઈન સ્કેલ + (વર્નિયર કાપો × 0.02 mm) થી ચોક્કસ માપ મેળવો.",
-        tip: "Least Count = 0.02 mm.",
-        img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 10,
-        title: "આઉટસાઇડ માઇક્રોમીટર (Outside Micrometer)",
-        category: "Measuring Tools",
-        short: "0.01 mm ની સુક્ષ્મ ચોકસાઈથી બહારનો વ્યાસ માપવો.",
-        usage: "ક્રેંકશાફ્ટ પિન જર્નલ અને વાલ્વ સ્ટેમ ઓવેલિટી માપવા.",
-        howto: "થિમ્બલ અને રેટચેટ સ્ટોપનો ઉપયોગ કરી કટ-કટ અવાજ આવે ત્યારે રીડિંગ લો.",
-        tip: "Least Count = 0.01 mm.",
-        img: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 11,
-        title: "ફિલર ગેજ (Feeler Gauge Set)",
-        category: "Measuring Tools",
-        short: "ગૅપ અને ક્લિયરન્સ માપવા માટે સ્ટીલ બ્લેડ્સ.",
-        usage: "એન્જિન વાલ્વ ટેપેટ ક્લિયરન્સ અને પિસ્ટન રિંગ ગૅપ સેટ કરવા.",
-        howto: "ગૅપમાં યોગ્ય પતલી પટ્ટી સરકાવો.",
-        tip: "ડીઝલ મેકેનિકનું સૌથી અગત્યનું ટ્યુનિંગ ટૂલ.",
-        img: "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=600&q=80"
-      },
+</div>
 
-      // --- MARKING TOOLS ---
-      {
-        id: 12,
-        title: "સ્ક્રાઇબર અને સેન્ટર પંચ (Scriber & Center Punch)",
-        category: "Marking Tools",
-        short: "ધાતુ પર લાઇન દોરવા અને ડ્રિલ પોઇન્ટ બનાવવો.",
-        usage: "જૉબ લેઆઉટ દોરવા અને ડ્રિલિંગ પહેલાં 90° નો સેન્ટર ખાડો પાડવા.",
-        howto: "સ્ક્રાઇબરથી લાઇન દોરો અને સેન્ટર પંચ પર હથોડીનો હળવો ફટકો મારો.",
-        tip: "Center Punch Angle = 90°.",
-        img: "https://images.unsplash.com/photo-1508873696983-2df515122519?auto=format&fit=crop&w=600&q=80"
-      },
+</div>
 
-      // --- CUTTING TOOLS ---
-      {
-        id: 13,
-        title: "હેક્સો ફ્રેમ અને બ્લેડ (Hacksaw)",
-        category: "Cutting Tools",
-        short: "ધાતુના રોડ, પાઈપ અને પટ્ટીઓ કાપવા.",
-        usage: "વર્કશોપમાં વધારાની ધાતુ કાપીને અલગ કરવી.",
-        howto: "ફોરવર્ડ સ્ટ્રોકમાં જ દબાણ આપવું.",
-        tip: "દાંતા હંમેશા આગળની તરફ સેટ કરવા.",
-        img: "https://images.unsplash.com/photo-1530124566582-a618bc2615dc?auto=format&fit=crop&w=600&q=80"
-      },
-      {
-        id: 14,
-        title: "ફાઇલ સેટ / રેતી (Hand Files)",
-        category: "Cutting Tools",
-        short: "ધાતુ ઘસીને આકાર આપવો અને બર્સ હટાવવા.",
-        usage: "ફ્લેટ, રાઉન્ડ, હાફ-રાઉન્ડ અને ટ્રાયએન્ગ્યુલર ફાઇલ વડે મટીરીયલ ફિનિશ કરવું.",
-        howto: "બંને હાથે પકડીને સમાંતર સ્ટ્રોક આપવો.",
-        tip: "ફાઇલ સાફ કરવા ફાઇલ કાર્ડ વાપરવું.",
-        img: "https://images.unsplash.com/photo-1581147036324-c17ac41dfa6c?auto=format&fit=crop&w=600&q=80"
-      }
-    ];
 
-    let currentCategory = 'all';
+<div class="controls">
 
-    function renderTools() {
-      const grid = document.getElementById('toolsGrid');
-      const search = document.getElementById('searchBox').value.toLowerCase();
-      grid.innerHTML = '';
+<input
+id="search"
+class="search"
+type="search"
+placeholder="Search tool... e.g. Vernier Caliper, Micrometer, Torque Wrench"
+>
 
-      const filtered = toolsData.filter(item => {
-        const matchCat = currentCategory === 'all' || item.category === currentCategory;
-        const matchSearch = item.title.toLowerCase().includes(search) || item.short.toLowerCase().includes(search);
-        return matchCat && matchSearch;
-      });
+<div id="filters" class="filters"></div>
 
-      if(filtered.length === 0) {
-        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748b; font-size: 1.1rem; padding: 40px;">કોઈ ટૂલ મળ્યું નથી. બીજું નામ ટાઈપ કરી શોધો.</p>`;
-        return;
-      }
+</div>
 
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'tool-card';
-        card.onclick = () => openModal(item);
-        card.innerHTML = `
-          <div class="img-container">
-            <img src="${item.img}" alt="${item.title}" loading="lazy">
-          </div>
-          <div class="card-content">
-            <span class="tool-cat">${getCatGujarati(item.category)}</span>
-            <div class="tool-title">${item.title}</div>
-            <p class="tool-short">${item.short}</p>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
+</div>
 
-    function getCatGujarati(cat) {
-      switch(cat) {
-        case 'Hand Tools': return 'હેન્ડ ટૂલ્સ';
-        case 'Power Tools': return 'પાવર ટૂલ્સ';
-        case 'Measuring Tools': return 'મેઝરિંગ ટૂલ્સ';
-        case 'Marking Tools': return 'માર્કિંગ ટૂલ્સ';
-        case 'Cutting Tools': return 'કટિંગ ટૂલ્સ';
-        default: return cat;
-      }
-    }
+</header>
 
-    function setCategory(cat, evt) {
-      currentCategory = cat;
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-      evt.target.classList.add('active');
-      renderTools();
-    }
 
-    function filterData() {
-      renderTools();
-    }
+<main class="container">
 
-    function openModal(item) {
-      document.getElementById('mHero').innerHTML = `<img src="${item.img}" alt="${item.title}">`;
-      document.getElementById('mTitle').innerText = item.title;
-      document.getElementById('mCat').innerText = getCatGujarati(item.category);
-      document.getElementById('mUsage').innerText = item.usage;
-      document.getElementById('mHowTo').innerText = item.howto;
-      document.getElementById('mTip').innerText = item.tip;
-      document.getElementById('modalOverlay').style.display = 'flex';
-    }
+<div class="stats">
 
-    function closeModal() {
-      document.getElementById('modalOverlay').style.display = 'none';
-    }
+<div class="stat">
+<b id="toolCount">0</b> Tools
+</div>
 
-    window.onclick = function(event) {
-      const modal = document.getElementById('modalOverlay');
-      if (event.target == modal) { modal.style.display = "none"; }
-    }
+<div class="stat">
+ITI Mechanic Diesel
+</div>
 
-    // Initial Launch
+<div class="stat">
+Authentic Photo Lookup
+</div>
+
+</div>
+
+
+<section
+id="toolGrid"
+class="grid">
+</section>
+
+</main>
+
+
+<footer>
+
+ITI Mechanic Diesel Tool Library —
+Educational reference for ITI trainees.
+Tool images are requested from Wikimedia Commons at runtime.
+Always verify exact tool model/specification with the physical workshop tool.
+
+</footer>
+
+
+<!-- MODAL -->
+
+<div
+id="modal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-grid">
+
+<div
+id="modalImage"
+class="modal-image">
+</div>
+
+
+<div class="modal-info">
+
+<button
+class="close"
+onclick="closeModal()">
+×
+</button>
+
+<div
+id="modalCategory"
+class="modal-category">
+</div>
+
+<h2
+id="modalTitle"
+class="modal-title">
+</h2>
+
+<p
+id="modalDescription"
+class="modal-description">
+</p>
+
+<div
+id="modalSpecs"
+class="specs">
+</div>
+
+<div
+id="modalSource"
+class="source">
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   TOOL DATABASE
+========================================================= */
+
+const tools = [
+
+/* ================= HAND TOOLS ================= */
+
+{
+id:1,
+category:"Hand Tools",
+name:"Combination Spanner",
+query:"combination wrench spanner",
+description:"Open-end and ring-end spanner used for general fastener work.",
+use:"Fasteners / nuts and bolts",
+tags:["Spanner","Fastening"]
+},
+
+{
+id:2,
+category:"Hand Tools",
+name:"Open-End Spanner",
+query:"open end wrench spanner",
+description:"Open jaw spanner for accessible hexagonal fasteners.",
+use:"Fastener loosening and tightening",
+tags:["Spanner"]
+},
+
+{
+id:3,
+category:"Hand Tools",
+name:"Ring Spanner",
+query:"ring spanner wrench",
+description:"Box-type ring spanner providing good contact around a nut.",
+use:"Engine fasteners",
+tags:["Spanner"]
+},
+
+{
+id:4,
+category:"Hand Tools",
+name:"Adjustable Wrench",
+query:"adjustable wrench spanner",
+description:"Adjustable jaw wrench for different fastener sizes.",
+use:"General maintenance",
+tags:["Wrench"]
+},
+
+{
+id:5,
+category:"Hand Tools",
+name:"Socket Set",
+query:"socket wrench set ratchet",
+description:"Interchangeable sockets used with ratchets and handles.",
+use:"Engine and vehicle fasteners",
+tags:["Socket","Ratchet"]
+},
+
+{
+id:6,
+category:"Hand Tools",
+name:"Ratchet Handle",
+query:"ratchet wrench handle",
+description:"Reversible ratcheting handle for rapid socket operation.",
+use:"Socket work",
+tags:["Ratchet"]
+},
+
+{
+id:7,
+category:"Hand Tools",
+name:"Sliding T Handle",
+query:"sliding T handle socket wrench",
+description:"Sliding-bar handle used with sockets where extra leverage is required.",
+use:"Socket operation",
+tags:["Socket"]
+},
+
+{
+id:8,
+category:"Hand Tools",
+name:"Universal Joint",
+query:"socket wrench universal joint",
+description:"Flexible socket accessory for working at an angle.",
+use:"Difficult-access fasteners",
+tags:["Socket"]
+},
+
+{
+id:9,
+category:"Hand Tools",
+name:"Allen Key Set",
+query:"hex key allen key set",
+description:"Hexagonal keys for internal hex socket screws.",
+use:"Internal hex fasteners",
+tags:["Hex Key"]
+},
+
+{
+id:10,
+category:"Hand Tools",
+name:"Phillips Screwdriver",
+query:"Phillips screwdriver",
+description:"Cross-head screwdriver for Phillips screws.",
+use:"Screw removal and installation",
+tags:["Screwdriver"]
+},
+
+{
+id:11,
+category:"Hand Tools",
+name:"Flat Screwdriver",
+query:"flat blade screwdriver",
+description:"Slotted screwdriver for straight-slot screws.",
+use:"Screw removal and installation",
+tags:["Screwdriver"]
+},
+
+{
+id:12,
+category:"Hand Tools",
+name:"Combination Pliers",
+query:"combination pliers",
+description:"General-purpose pliers for gripping, bending and light cutting.",
+use:"Gripping and light cutting",
+tags:["Pliers"]
+},
+
+{
+id:13,
+category:"Hand Tools",
+name:"Long Nose Pliers",
+query:"long nose pliers",
+description:"Long narrow jaws for gripping components in confined spaces.",
+use:"Electrical and mechanical access",
+tags:["Pliers"]
+},
+
+{
+id:14,
+category:"Hand Tools",
+name:"Side Cutting Pliers",
+query:"diagonal cutting pliers side cutters",
+description:"Diagonal cutters for wire and small soft material.",
+use:"Wire cutting",
+tags:["Cutter"]
+},
+
+{
+id:15,
+category:"Hand Tools",
+name:"Circlip Pliers",
+query:"circlip pliers snap ring pliers",
+description:"Special pliers for fitting and removing retaining rings.",
+use:"Circlip removal and installation",
+tags:["Pliers"]
+},
+
+{
+id:16,
+category:"Hand Tools",
+name:"Water Pump Pliers",
+query:"water pump pliers slip joint pliers",
+description:"Adjustable gripping pliers with multiple jaw positions.",
+use:"Irregular and large components",
+tags:["Pliers"]
+},
+
+{
+id:17,
+category:"Hand Tools",
+name:"Pipe Wrench",
+query:"pipe wrench Stillson wrench",
+description:"Heavy-duty serrated-jaw wrench for round pipes and fittings.",
+use:"Pipe and fitting work",
+tags:["Wrench"]
+},
+
+{
+id:18,
+category:"Hand Tools",
+name:"Torque Wrench",
+query:"click torque wrench",
+description:"Precision tightening tool used to apply specified torque.",
+use:"Critical engine fasteners",
+tags:["Torque","Precision"]
+},
+
+{
+id:19,
+category:"Hand Tools",
+name:"Ball Peen Hammer",
+query:"ball peen hammer",
+description:"Engineering hammer with flat face and rounded ball peen.",
+use:"Fitting and metalwork",
+tags:["Hammer"]
+},
+
+{
+id:20,
+category:"Hand Tools",
+name:"Cross Peen Hammer",
+query:"cross peen hammer",
+description:"Hammer with wedge-shaped cross peen for controlled metalwork.",
+use:"Fitting work",
+tags:["Hammer"]
+},
+
+{
+id:21,
+category:"Hand Tools",
+name:"Soft Face Mallet",
+query:"rubber mallet soft face mallet",
+description:"Soft striking tool used where surface damage must be minimized.",
+use:"Assembly and disassembly",
+tags:["Mallet"]
+},
+
+{
+id:22,
+category:"Hand Tools",
+name:"Bench Vice",
+query:"engineer bench vice",
+description:"Rigid work-holding device with fixed and moving jaws.",
+use:"Holding components",
+tags:["Holding"]
+},
+
+{
+id:23,
+category:"Hand Tools",
+name:"C Clamp",
+query:"C clamp G clamp",
+description:"Screw-operated clamp for temporarily holding work.",
+use:"Work holding",
+tags:["Clamp"]
+},
+
+{
+id:24,
+category:"Hand Tools",
+name:"Two Jaw Gear Puller",
+query:"two jaw gear puller",
+description:"Mechanical puller for removing gears and pulleys.",
+use:"Component removal",
+tags:["Puller"]
+},
+
+{
+id:25,
+category:"Hand Tools",
+name:"Three Jaw Gear Puller",
+query:"three jaw gear puller",
+description:"Three-jaw puller providing balanced grip around a component.",
+use:"Component removal",
+tags:["Puller"]
+},
+
+{
+id:26,
+category:"Hand Tools",
+name:"Oil Filter Wrench",
+query:"automotive oil filter wrench",
+description:"Purpose-made wrench for removing spin-on oil filters.",
+use:"Oil filter service",
+tags:["Automotive"]
+},
+
+{
+id:27,
+category:"Hand Tools",
+name:"Feeler Gauge",
+query:"feeler gauge set",
+description:"Thin leaves used to measure small clearances.",
+use:"Valve and tappet clearance",
+tags:["Measuring"]
+},
+
+{
+id:28,
+category:"Hand Tools",
+name:"Gasket Scraper",
+query:"mechanical gasket scraper",
+description:"Flat-edged hand tool used to remove gasket material.",
+use:"Cleaning mating surfaces",
+tags:["Cleaning"]
+},
+
+{
+id:29,
+category:"Hand Tools",
+name:"Wire Brush",
+query:"steel wire brush workshop",
+description:"Wire brush used to remove rust, carbon and deposits.",
+use:"Component cleaning",
+tags:["Cleaning"]
+},
+
+
+/* ================= MEASURING ================= */
+
+{
+id:30,
+category:"Measuring Tools",
+name:"Steel Rule",
+query:"steel rule machinist ruler",
+description:"Rigid graduated rule for direct linear measurement.",
+use:"Linear measurement",
+tags:["Length"]
+},
+
+{
+id:31,
+category:"Measuring Tools",
+name:"Measuring Tape",
+query:"steel measuring tape",
+description:"Flexible graduated tape for longer dimensions.",
+use:"Workshop measurement",
+tags:["Length"]
+},
+
+{
+id:32,
+category:"Measuring Tools",
+name:"Vernier Caliper",
+query:"vernier caliper 150 mm",
+description:"Precision instrument for outside, inside and depth measurement.",
+use:"Diameter, thickness and depth",
+tags:["Precision","Vernier"]
+},
+
+{
+id:33,
+category:"Measuring Tools",
+name:"Outside Micrometer",
+query:"outside micrometer 0-25 mm",
+description:"Precision screw micrometer for external dimensions.",
+use:"Shaft, journal and thickness measurement",
+tags:["Precision","Micrometer"]
+},
+
+{
+id:34,
+category:"Measuring Tools",
+name:"Depth Micrometer",
+query:"depth micrometer",
+description:"Micrometer designed to measure recesses, slots and depths.",
+use:"Depth measurement",
+tags:["Precision"]
+},
+
+{
+id:35,
+category:"Measuring Tools",
+name:"Inside Caliper",
+query:"inside caliper measuring tool",
+description:"Spring-type caliper for checking internal dimensions.",
+use:"Internal dimensions",
+tags:["Caliper"]
+},
+
+{
+id:36,
+category:"Measuring Tools",
+name:"Outside Caliper",
+query:"outside caliper measuring tool",
+description:"Spring-type caliper for checking external dimensions.",
+use:"External dimensions",
+tags:["Caliper"]
+},
+
+{
+id:37,
+category:"Measuring Tools",
+name:"Spring Divider",
+query:"spring divider machinist",
+description:"Pointed instrument for transferring dimensions and scribing arcs.",
+use:"Marking and transfer",
+tags:["Marking"]
+},
+
+{
+id:38,
+category:"Measuring Tools",
+name:"Telescope Gauge",
+query:"telescoping gauge bore gauge",
+description:"Transfer gauge used with a micrometer to check internal bores.",
+use:"Bore measurement",
+tags:["Precision"]
+},
+
+{
+id:39,
+category:"Measuring Tools",
+name:"Dial Bore Gauge",
+query:"dial bore gauge",
+description:"Comparative dial instrument for checking bore size and variation.",
+use:"Cylinder bore inspection",
+tags:["Precision","Dial"]
+},
+
+{
+id:40,
+category:"Measuring Tools",
+name:"Dial Indicator",
+query:"dial indicator test indicator",
+description:"Sensitive comparative gauge for displacement, runout and alignment.",
+use:"Runout and alignment",
+tags:["Precision","Dial"]
+},
+
+{
+id:41,
+category:"Measuring Tools",
+name:"Straight Edge",
+query:"machinist straight edge",
+description:"Precision straight reference for checking flatness and alignment.",
+use:"Flatness and alignment",
+tags:["Inspection"]
+},
+
+{
+id:42,
+category:"Measuring Tools",
+name:"Thread Pitch Gauge",
+query:"thread pitch gauge",
+description:"Leaf gauge used to identify thread pitch and profile.",
+use:"Thread identification",
+tags:["Thread"]
+},
+
+{
+id:43,
+category:"Measuring Tools",
+name:"Vacuum Gauge",
+query:"automotive engine vacuum gauge",
+description:"Gauge for measuring engine intake manifold vacuum.",
+use:"Engine diagnosis",
+tags:["Diagnostic"]
+},
+
+{
+id:44,
+category:"Measuring Tools",
+name:"Tyre Pressure Gauge",
+query:"tire pressure gauge automotive",
+description:"Gauge used to check tyre inflation pressure.",
+use:"Tyre service",
+tags:["Automotive"]
+},
+
+{
+id:45,
+category:"Measuring Tools",
+name:"Try Square",
+query:"engineer try square",
+description:"Square used to check 90-degree accuracy.",
+use:"Squareness and marking",
+tags:["Inspection"]
+},
+
+{
+id:46,
+category:"Measuring Tools",
+name:"Surface Gauge",
+query:"surface gauge scriber",
+description:"Base-mounted gauge used for height marking and comparison.",
+use:"Layout and height marking",
+tags:["Marking"]
+},
+
+{
+id:47,
+category:"Measuring Tools",
+name:"Combination Set",
+query:"engineer combination square set",
+description:"Multi-purpose square and rule assembly.",
+use:"Measurement and marking",
+tags:["Inspection"]
+},
+
+{
+id:48,
+category:"Measuring Tools",
+name:"Radius Gauge",
+query:"radius gauge set machinist",
+description:"Gauge for checking concave and convex radii.",
+use:"Radius inspection",
+tags:["Inspection"]
+},
+
+
+/* ================= MARKING ================= */
+
+{
+id:49,
+category:"Marking Tools",
+name:"Scriber",
+query:"engineer's scriber marking tool",
+description:"Hardened pointed tool used to scratch layout lines on metal.",
+use:"Metal marking",
+tags:["Layout"]
+},
+
+{
+id:50,
+category:"Marking Tools",
+name:"Prick Punch",
+query:"prick punch machinist",
+description:"Light-point punch used to make small locating marks.",
+use:"Layout marking",
+tags:["Punch"]
+},
+
+{
+id:51,
+category:"Marking Tools",
+name:"Centre Punch",
+query:"centre punch tool",
+description:"Punch used to make a drilling starting mark.",
+use:"Drill location",
+tags:["Punch"]
+},
+
+{
+id:52,
+category:"Marking Tools",
+name:"Pin Punch",
+query:"pin punch set",
+description:"Punch used to drive pins after initial loosening.",
+use:"Pin removal",
+tags:["Punch"]
+},
+
+{
+id:53,
+category:"Marking Tools",
+name:"Drift Punch",
+query:"drift punch tapered punch",
+description:"Tapered punch used for alignment and pin work.",
+use:"Alignment",
+tags:["Punch"]
+},
+
+{
+id:54,
+category:"Marking Tools",
+name:"Letter Punch Set",
+query:"metal letter punch set",
+description:"Hardened stamps for permanent letter marking.",
+use:"Identification marking",
+tags:["Stamp"]
+},
+
+{
+id:55,
+category:"Marking Tools",
+name:"Number Punch Set",
+query:"metal number punch set",
+description:"Hardened stamps for numerical identification marking.",
+use:"Identification marking",
+tags:["Stamp"]
+},
+
+{
+id:56,
+category:"Marking Tools",
+name:"Divider",
+query:"machinist divider tool",
+description:"Two-point layout instrument for arcs, circles and transferring distances.",
+use:"Layout",
+tags:["Layout"]
+},
+
+{
+id:57,
+category:"Marking Tools",
+name:"Surface Plate",
+query:"granite surface plate metrology",
+description:"Precision reference surface for layout and inspection.",
+use:"Precision layout",
+tags:["Reference"]
+},
+
+
+/* ================= CUTTING ================= */
+
+{
+id:58,
+category:"Cutting Tools",
+name:"Hacksaw",
+query:"hacksaw metal cutting",
+description:"Hand saw with replaceable blade for cutting metal.",
+use:"Metal cutting",
+tags:["Saw"]
+},
+
+{
+id:59,
+category:"Cutting Tools",
+name:"Hacksaw Blade",
+query:"hacksaw blade metal",
+description:"Replaceable toothed blade selected according to material.",
+use:"Metal cutting",
+tags:["Blade"]
+},
+
+{
+id:60,
+category:"Cutting Tools",
+name:"Flat Chisel",
+query:"cold chisel flat chisel machinist",
+description:"Flat-edged cold chisel for cutting and chipping metal.",
+use:"Metal cutting",
+tags:["Chisel"]
+},
+
+{
+id:61,
+category:"Cutting Tools",
+name:"Cross Cut Chisel",
+query:"cross cut chisel cold chisel",
+description:"Narrow wedge-shaped chisel for grooves and slots.",
+use:"Groove cutting",
+tags:["Chisel"]
+},
+
+{
+id:62,
+category:"Cutting Tools",
+name:"Half Round File",
+query:"half round file metal",
+description:"File with flat and curved faces.",
+use:"Filing",
+tags:["File"]
+},
+
+{
+id:63,
+category:"Cutting Tools",
+name:"Flat File",
+query:"flat file machinist",
+description:"General-purpose file for flat surfaces and edges.",
+use:"Filing",
+tags:["File"]
+},
+
+{
+id:64,
+category:"Cutting Tools",
+name:"Round File",
+query:"round file machinist",
+description:"Cylindrical file for holes and curved grooves.",
+use:"Filing",
+tags:["File"]
+},
+
+{
+id:65,
+category:"Cutting Tools",
+name:"Square File",
+query:"square file machinist",
+description:"Four-sided file for slots and square openings.",
+use:"Filing",
+tags:["File"]
+},
+
+{
+id:66,
+category:"Cutting Tools",
+name:"Three Square File",
+query:"three square triangular file",
+description:"Triangular file for V-grooves and internal angles.",
+use:"Filing",
+tags:["File"]
+},
+
+{
+id:67,
+category:"Cutting Tools",
+name:"Scraper",
+query:"gasket scraper automotive",
+description:"Sharp-edged tool for removing deposits and gasket material.",
+use:"Surface preparation",
+tags:["Finishing"]
+},
+
+{
+id:68,
+category:"Cutting Tools",
+name:"Emery Paper",
+query:"emery cloth abrasive paper",
+description:"Abrasive material for cleaning and finishing surfaces.",
+use:"Finishing",
+tags:["Abrasive"]
+},
+
+{
+id:69,
+category:"Cutting Tools",
+name:"Tin Snips",
+query:"aviation tin snips metal shears",
+description:"Hand shears for cutting thin sheet metal.",
+use:"Sheet-metal cutting",
+tags:["Shears"]
+},
+
+{
+id:70,
+category:"Cutting Tools",
+name:"Pipe Cutter",
+query:"manual pipe cutter",
+description:"Wheel-type cutter for controlled pipe cutting.",
+use:"Pipe cutting",
+tags:["Pipe"]
+},
+
+{
+id:71,
+category:"Cutting Tools",
+name:"Hand Reamer",
+query:"hand reamer machinist",
+description:"Cutting tool used to finish an existing hole accurately.",
+use:"Hole finishing",
+tags:["Hole"]
+},
+
+{
+id:72,
+category:"Cutting Tools",
+name:"Tap Set",
+query:"hand tap set metric",
+description:"Thread-cutting tools for producing internal threads.",
+use:"Internal threading",
+tags:["Thread"]
+},
+
+{
+id:73,
+category:"Cutting Tools",
+name:"Die Set",
+query:"metric threading die set",
+description:"Thread-cutting dies for producing external threads.",
+use:"External threading",
+tags:["Thread"]
+},
+
+{
+id:74,
+category:"Cutting Tools",
+name:"HSS Twist Drill Set",
+query:"HSS twist drill bit set",
+description:"Twist drills used to produce holes in metal.",
+use:"Drilling",
+tags:["Drill"]
+},
+
+
+/* ================= POWER ================= */
+
+{
+id:75,
+category:"Power Tools",
+name:"Electric Hand Drill",
+query:"electric hand drill power tool",
+description:"Portable powered drill for making holes.",
+use:"Drilling",
+tags:["Electric"]
+},
+
+{
+id:76,
+category:"Power Tools",
+name:"Angle Grinder",
+query:"angle grinder workshop",
+description:"Portable powered tool for cutting, grinding and preparation.",
+use:"Grinding and cutting",
+tags:["Electric"]
+},
+
+{
+id:77,
+category:"Power Tools",
+name:"Bench Grinder",
+query:"bench grinder workshop",
+description:"Stationary grinder with abrasive wheels.",
+use:"Grinding and sharpening",
+tags:["Electric"]
+},
+
+{
+id:78,
+category:"Power Tools",
+name:"Air Impact Wrench",
+query:"pneumatic air impact wrench",
+description:"Pneumatic impact tool for rapid fastener work.",
+use:"Vehicle fasteners",
+tags:["Pneumatic","Impact"]
+},
+
+{
+id:79,
+category:"Power Tools",
+name:"Air Ratchet",
+query:"pneumatic air ratchet wrench",
+description:"Compact pneumatic ratchet for confined spaces.",
+use:"Vehicle service",
+tags:["Pneumatic"]
+},
+
+{
+id:80,
+category:"Power Tools",
+name:"Air Blow Gun",
+query:"compressed air blow gun workshop",
+description:"Compressed-air nozzle for cleaning debris.",
+use:"Cleaning",
+tags:["Pneumatic"]
+},
+
+{
+id:81,
+category:"Power Tools",
+name:"Pneumatic Die Grinder",
+query:"pneumatic die grinder",
+description:"Compact air-powered rotary grinder.",
+use:"Grinding and finishing",
+tags:["Pneumatic"]
+},
+
+{
+id:82,
+category:"Power Tools",
+name:"Portable Electric Grinder",
+query:"portable electric grinder power tool",
+description:"Portable powered abrasive grinding tool.",
+use:"Grinding",
+tags:["Electric"]
+},
+
+{
+id:83,
+category:"Power Tools",
+name:"Electric Impact Wrench",
+query:"cordless electric impact wrench",
+description:"Powered impact wrench for high-torque fastener work.",
+use:"Vehicle fasteners",
+tags:["Electric","Impact"]
+},
+
+{
+id:84,
+category:"Power Tools",
+name:"Bench Drill Press",
+query:"bench drill press machine",
+description:"Stationary machine for controlled drilling.",
+use:"Workshop drilling",
+tags:["Machine"]
+},
+
+{
+id:85,
+category:"Power Tools",
+name:"Portable Polisher",
+query:"automotive electric polisher",
+description:"Rotary powered tool for surface polishing.",
+use:"Finishing",
+tags:["Electric"]
+},
+
+{
+id:86,
+category:"Power Tools",
+name:"Pressure Washer",
+query:"workshop pressure washer",
+description:"Powered water jet equipment for cleaning.",
+use:"Vehicle cleaning",
+tags:["Cleaning"]
+},
+
+{
+id:87,
+category:"Power Tools",
+name:"Battery Charger",
+query:"automotive battery charger workshop",
+description:"Electrical charging equipment for battery service.",
+use:"Battery maintenance",
+tags:["Electrical"]
+},
+
+{
+id:88,
+category:"Power Tools",
+name:"Battery Tester",
+query:"automotive battery load tester",
+description:"Diagnostic instrument for checking battery condition.",
+use:"Battery testing",
+tags:["Diagnostic"]
+},
+
+{
+id:89,
+category:"Power Tools",
+name:"Air Compressor",
+query:"workshop air compressor",
+description:"Compressed-air source for pneumatic tools.",
+use:"Pneumatic supply",
+tags:["Pneumatic"]
+},
+
+{
+id:90,
+category:"Power Tools",
+name:"Hydraulic Jack",
+query:"hydraulic floor jack automotive",
+description:"Hydraulic equipment used to raise vehicles.",
+use:"Vehicle lifting",
+tags:["Lifting","Safety"]
+},
+
+{
+id:91,
+category:"Power Tools",
+name:"Engine Hoist",
+query:"engine crane hoist workshop",
+description:"Mobile lifting equipment for engine removal and installation.",
+use:"Engine removal",
+tags:["Lifting","Safety"]
+},
+
+{
+id:92,
+category:"Power Tools",
+name:"Engine Stand",
+query:"automotive engine stand workshop",
+description:"Rotating support fixture for engine overhaul.",
+use:"Engine overhaul",
+tags:["Holding"]
+},
+
+{
+id:93,
+category:"Power Tools",
+name:"Hydraulic Press",
+query:"shop hydraulic press",
+description:"Pressing equipment for controlled mechanical operations.",
+use:"Bush and bearing work",
+tags:["Press"]
+},
+
+{
+id:94,
+category:"Power Tools",
+name:"Wheel Balancer",
+query:"automotive wheel balancer machine",
+description:"Machine used to identify and correct wheel imbalance.",
+use:"Wheel service",
+tags:["Automotive"]
+},
+
+{
+id:95,
+category:"Power Tools",
+name:"Tyre Inflator",
+query:"workshop tire inflator compressor",
+description:"Compressed-air equipment for controlled tyre inflation.",
+use:"Tyre service",
+tags:["Pneumatic"]
+},
+
+{
+id:96,
+category:"Power Tools",
+name:"Pressure Washer Spray Gun",
+query:"pressure washer spray gun",
+description:"Hand-held spray gun connected to a pressure washer.",
+use:"Vehicle cleaning",
+tags:["Cleaning"]
+}
+
+];
+
+
+/* =========================================================
+   CATEGORY FILTER
+========================================================= */
+
+const categories = [
+    "All",
+    ...new Set(tools.map(tool => tool.category))
+];
+
+const filters =
+document.getElementById("filters");
+
+let activeCategory = "All";
+let searchText = "";
+
+
+categories.forEach(category => {
+
+    const button =
+    document.createElement("button");
+
+    button.className =
+    "filter" +
+    (category === "All" ? " active" : "");
+
+    button.textContent = category;
+
+    button.onclick = () => {
+
+        activeCategory = category;
+
+        document
+        .querySelectorAll(".filter")
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+        button.classList.add("active");
+
+        renderTools();
+
+    };
+
+    filters.appendChild(button);
+
+});
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+document
+.getElementById("search")
+.addEventListener("input", function(){
+
+    searchText =
+    this.value.toLowerCase().trim();
+
     renderTools();
-  </script>
+
+});
+
+
+/* =========================================================
+   FILTER MATCH
+========================================================= */
+
+function matches(tool){
+
+    const text = (
+
+        tool.name + " " +
+        tool.category + " " +
+        tool.description + " " +
+        tool.use + " " +
+        tool.query + " " +
+        tool.tags.join(" ")
+
+    ).toLowerCase();
+
+    return (
+
+        (activeCategory === "All" ||
+         tool.category === activeCategory)
+
+        &&
+
+        (!searchText ||
+         text.includes(searchText))
+
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(text){
+
+    return text.replace(
+        /[&<>"']/g,
+        function(char){
+
+            const map = {
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#039;"
+            };
+
+            return map[char];
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   RENDER
+========================================================= */
+
+function renderTools(){
+
+    const grid =
+    document.getElementById("toolGrid");
+
+    const list =
+    tools.filter(matches);
+
+    document
+    .getElementById("toolCount")
+    .textContent = list.length;
+
+    grid.innerHTML = "";
+
+    if(list.length === 0){
+
+        grid.innerHTML = `
+        <div class="empty">
+            <h2>No tool found</h2>
+            <p>Try another tool name or category.</p>
+        </div>
+        `;
+
+        return;
+    }
+
+
+    list.forEach(tool => {
+
+        const card =
+        document.createElement("article");
+
+        card.className = "card";
+
+
+        card.innerHTML = `
+
+        <div class="photo">
+
+            <span class="category-badge">
+                ${escapeHTML(tool.category)}
+            </span>
+
+            <span class="photo-label">
+                Loading authentic photo...
+            </span>
+
+            <img
+                alt="${escapeHTML(tool.name)}"
+            >
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="category">
+                ${escapeHTML(tool.category)}
+            </div>
+
+            <div class="tool-name">
+                ${escapeHTML(tool.name)}
+            </div>
+
+            <div class="description">
+                ${escapeHTML(tool.description)}
+            </div>
+
+            <div class="tags">
+
+                ${tool.tags.map(tag =>
+
+                    `<span class="tag">
+                        ${escapeHTML(tag)}
+                    </span>`
+
+                ).join("")}
+
+            </div>
+
+        </div>
+
+        `;
+
+
+        card.onclick =
+        () => openModal(tool);
+
+
+        grid.appendChild(card);
+
+
+        const image =
+        card.querySelector("img");
+
+        const label =
+        card.querySelector(".photo-label");
+
+
+        loadCommonsImage(
+            image,
+            label,
+            tool
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   WIKIMEDIA COMMONS IMAGE SEARCH
+========================================================= */
+
+async function loadCommonsImage(
+    image,
+    label,
+    tool
+){
+
+    try{
+
+        const api =
+
+        "https://commons.wikimedia.org/w/api.php" +
+
+        "?action=query" +
+
+        "&generator=search" +
+
+        "&gsrsearch=" +
+        encodeURIComponent(tool.query) +
+
+        "&gsrnamespace=6" +
+
+        "&gsrlimit=1" +
+
+        "&prop=imageinfo" +
+
+        "&iiprop=url|extmetadata" +
+
+        "&iiurlwidth=900" +
+
+        "&format=json" +
+
+        "&origin=*";
+
+
+        const response =
+        await fetch(api);
+
+        const data =
+        await response.json();
+
+
+        const pages =
+        data.query &&
+        data.query.pages
+        ? Object.values(data.query.pages)
+        : [];
+
+
+        if(
+
+            pages.length &&
+
+            pages[0].imageinfo &&
+
+            pages[0].imageinfo[0]
+
+        ){
+
+            const info =
+            pages[0].imageinfo[0];
+
+
+            image.src =
+            info.thumburl || info.url;
+
+
+            image.dataset.source =
+            info.descriptionurl ||
+            "https://commons.wikimedia.org/";
+
+
+            image.onload = () => {
+
+                image.style.display =
+                "block";
+
+                label.style.display =
+                "none";
+
+            };
+
+
+            image.onerror = () => {
+
+                label.textContent =
+                "Photo unavailable";
+
+            };
+
+        }
+
+        else{
+
+            label.textContent =
+            "No suitable photo found";
+
+        }
+
+    }
+
+    catch(error){
+
+        label.textContent =
+        "Photo lookup unavailable";
+
+    }
+
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+function openModal(tool){
+
+    const modal =
+    document.getElementById("modal");
+
+    modal.classList.add("show");
+
+
+    document
+    .getElementById("modalCategory")
+    .textContent =
+    tool.category;
+
+
+    document
+    .getElementById("modalTitle")
+    .textContent =
+    tool.name;
+
+
+    document
+    .getElementById("modalDescription")
+    .textContent =
+
+    tool.description +
+    " Typical ITI use: " +
+    tool.use + ".";
+
+
+    document
+    .getElementById("modalSpecs")
+    .innerHTML = `
+
+    <div class="spec">
+
+        <b>CATEGORY</b>
+
+        ${escapeHTML(tool.category)}
+
+    </div>
+
+
+    <div class="spec">
+
+        <b>ITI USE</b>
+
+        ${escapeHTML(tool.use)}
+
+    </div>
+
+
+    <div class="spec">
+
+        <b>PHOTO SEARCH</b>
+
+        ${escapeHTML(tool.query)}
+
+    </div>
+
+
+    <div class="spec">
+
+        <b>TAGS</b>
+
+        ${escapeHTML(tool.tags.join(", "))}
+
+    </div>
+
+    `;
+
+
+    document
+    .getElementById("modalSource")
+    .textContent =
+    "Image reference: Wikimedia Commons. Always verify the exact physical tool/model before using it for practical identification.";
+
+
+    const box =
+    document.getElementById("modalImage");
+
+    box.innerHTML = `
+        <span class="photo-label">
+            Loading authentic photo...
+        </span>
+    `;
+
+
+    const image =
+    document.createElement("img");
+
+    image.alt =
+    tool.name;
+
+
+    box.appendChild(image);
+
+
+    loadCommonsImage(
+
+        image,
+
+        box.querySelector(".photo-label"),
+
+        tool
+
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE MODAL
+========================================================= */
+
+function closeModal(){
+
+    document
+    .getElementById("modal")
+    .classList.remove("show");
+
+}
+
+
+document
+.getElementById("modal")
+.addEventListener("click",function(event){
+
+    if(event.target === this){
+
+        closeModal();
+
+    }
+
+});
+
+
+document
+.addEventListener("keydown",function(event){
+
+    if(event.key === "Escape"){
+
+        closeModal();
+
+    }
+
+});
+
+
+/* =========================================================
+   START
+========================================================= */
+
+renderTools();
+
+</script>
+
 </body>
 </html>
