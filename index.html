@@ -3,265 +3,123 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ITI મેકેનિક ડીઝલ - ટૂલ્સ વિઝ્યુઅલ સિમ્યુલેટર</title>
+  <title>ITI Mechanic Diesel - Interactive Workshop Tools Simulator</title>
   <style>
     :root {
-      --primary: #1e3a8a;
-      --secondary: #0284c7;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --text: #0f172a;
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #1e293b;
     }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
 
-    header {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-
-    h1 {
-      color: var(--primary);
-      margin-bottom: 5px;
-    }
-
-    .subtitle {
-      color: #64748b;
-      font-size: 1.1rem;
-      margin-bottom: 8px;
-    }
-
-    /* Author Header Tag */
-    .header-author {
+    header { text-align: center; margin-bottom: 25px; }
+    h1 { color: var(--accent); font-size: 1.8rem; margin-bottom: 5px; }
+    .subtitle { color: #64748b; font-size: 1rem; margin-bottom: 12px; }
+    
+    .credit-badge {
       display: inline-block;
-      background-color: #dbeafe;
-      color: var(--primary);
+      background: #dbeafe;
+      color: #1e40af;
       font-weight: bold;
-      padding: 6px 16px;
+      padding: 8px 18px;
       border-radius: 20px;
       font-size: 0.95rem;
       border: 1px solid #bfdbfe;
-    }
-
-    /* Filters */
-    .filter-container {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 25px;
-    }
-
-    .filter-btn {
-      background-color: #e2e8f0;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.2s ease;
-    }
-
-    .filter-btn.active, .filter-btn:hover {
-      background-color: var(--primary);
-      color: white;
-    }
-
-    /* Grid */
-    .tools-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      flex: 1;
-    }
-
-    .tool-card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      border-top: 5px solid var(--secondary);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: transform 0.2s;
-    }
-
-    .tool-card:hover {
-      transform: translateY(-4px);
-    }
-
-    .svg-icon {
-      width: 120px;
-      height: 120px;
       margin-bottom: 15px;
     }
 
-    .tool-title {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: var(--primary);
-      margin: 5px 0;
-    }
+    /* Controls */
+    .controls { max-width: 1100px; margin: 0 auto 25px auto; display: flex; flex-direction: column; gap: 15px; align-items: center; }
+    .search-box { width: 100%; max-width: 450px; padding: 12px 18px; border: 2px solid #cbd5e1; border-radius: 25px; font-size: 1rem; outline: none; transition: 0.3s; }
+    .search-box:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(37,99,235,0.2); }
 
-    .tool-category {
-      background-color: #e0f2fe;
-      color: #0369a1;
-      font-size: 0.8rem;
-      padding: 4px 10px;
+    .filter-group { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .filter-btn { background: #e2e8f0; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+    .filter-btn.active, .filter-btn:hover { background: var(--accent); color: white; }
+
+    /* Grid Layout */
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+    
+    .tool-card {
+      background: var(--card);
       border-radius: 12px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .tool-desc {
-      font-size: 0.95rem;
-      text-align: center;
-      color: #334155;
-      line-height: 1.4;
-    }
-
-    .memory-tip {
-      margin-top: auto;
-      background-color: #fef3c7;
-      border-left: 3px solid #d97706;
-      padding: 8px 12px;
-      font-size: 0.85rem;
-      width: 100%;
-      box-sizing: border-box;
-      border-radius: 4px;
-      margin-top: 15px;
-    }
-
-    /* Footer Author Credit */
-    footer {
-      text-align: center;
-      margin-top: 40px;
       padding: 15px;
-      background-color: var(--primary);
-      color: white;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-top: 4px solid var(--accent);
     }
+    .tool-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+
+    .img-container { width: 100%; height: 140px; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 8px; margin-bottom: 12px; padding: 10px; }
+    .img-container svg { width: 100px; height: 100px; }
+
+    .tool-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); text-align: center; margin-bottom: 5px; }
+    .tool-cat { font-size: 0.75rem; background: #e0f2fe; color: #0369a1; padding: 3px 10px; border-radius: 12px; font-weight: bold; margin-bottom: 8px; }
+    .tool-short { font-size: 0.85rem; color: #475569; text-align: center; line-height: 1.3; }
+
+    /* Modal Simulation Window */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; padding: 20px; z-index: 1000; }
+    .modal-content { background: white; width: 100%; max-width: 550px; border-radius: 15px; padding: 25px; position: relative; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+    
+    .close-btn { position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; font-size: 1.2rem; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; }
+    .modal-hero { width: 100%; height: 180px; background: #f8fafc; display: flex; align-items: center; justify-content: center; border-radius: 10px; margin-bottom: 15px; }
+    .modal-hero svg { width: 130px; height: 130px; }
+
+    .modal-title { font-size: 1.4rem; color: var(--primary); margin-bottom: 5px; }
+    .modal-cat { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 0.85rem; margin-bottom: 15px; }
+    .modal-body { font-size: 0.95rem; line-height: 1.5; color: #334155; }
+    .modal-body h4 { color: var(--accent); margin: 12px 0 4px 0; }
+    
+    footer { text-align: center; margin-top: 40px; padding: 18px; background: var(--primary); color: white; border-radius: 10px; font-size: 1rem; font-weight: 500; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>🔧 ITI મેકેનિક ડીઝલ - વર્કશોપ ટૂલ્સ એક્સપ્લોરર</h1>
-    <p class="subtitle">વર્ગીકરણ મુજબ ટૂલ્સના એક્યુરેટ ચિત્રો અને ઉપયોગ જુઓ</p>
-    <div class="header-author">👨‍🏫 Created by Yuvrajsinh Kosamia, Mechanic Diesel, ITI Ankleshwar</div>
+    <h1>⚙️ ITI મેકેનિક ડીઝલ - વર્કશોપ ટૂલ્સ સિમ્યુલેટર</h1>
+    <p class="subtitle">તમામ ટૂલ્સના મોટા વિઝ્યુઅલ, સાચું વર્ગીકરણ અને સચોટ ઉપયોગ શીખો</p>
+    <div class="credit-badge">👨‍🏫 Created by Yuvrajsinh Kosamia, Mechanic Diesel, ITI Ankleshwar</div>
   </header>
 
-  <!-- Filter Buttons -->
-  <div class="filter-container">
-    <button class="filter-btn active" onclick="filterTools('all', event)">બધા ટૂલ્સ (All)</button>
-    <button class="filter-btn" onclick="filterTools('hand', event)">હેન્ડ ટૂલ્સ (Hand Tools)</button>
-    <button class="filter-btn" onclick="filterTools('measuring', event)">મેઝરિંગ ટૂલ્સ (Measuring)</button>
-    <button class="filter-btn" onclick="filterTools('marking', event)">માર્કિંગ ટૂલ્સ (Marking)</button>
-    <button class="filter-btn" onclick="filterTools('cutting', event)">કટિંગ ટૂલ્સ (Cutting)</button>
+  <div class="controls">
+    <input type="text" class="search-box" id="searchBox" placeholder="🔍 ટૂલનું નામ શોધો (उदा. Torque Wrench, Micrometer)..." oninput="filterData()">
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="setCategory('all', event)">બધા (All)</button>
+      <button class="filter-btn" onclick="setCategory('Hand Tools', event)">હેન્ડ ટૂલ્સ</button>
+      <button class="filter-btn" onclick="setCategory('Power Tools', event)">પાવર ટૂલ્સ</button>
+      <button class="filter-btn" onclick="setCategory('Measuring Tools', event)">મેઝરિંગ ટૂલ્સ</button>
+      <button class="filter-btn" onclick="setCategory('Marking Tools', event)">માર્કિંગ ટૂલ્સ</button>
+      <button class="filter-btn" onclick="setCategory('Cutting Tools', event)">કટિંગ ટૂલ્સ</button>
+    </div>
   </div>
 
-  <!-- Tools Grid -->
-  <div class="tools-grid" id="toolsGrid">
+  <div class="tools-grid" id="toolsGrid"></div>
 
-    <!-- Torque Wrench -->
-    <div class="tool-card" data-category="hand">
-      <svg class="svg-icon" viewBox="0 0 100 100">
-        <rect x="15" y="45" width="55" height="10" rx="3" fill="#64748b"/>
-        <circle cx="20" cy="50" r="8" fill="#334155"/>
-        <path d="M 70 42 L 85 42 L 85 58 L 70 58 Z" fill="#0284c7"/>
-        <circle cx="20" cy="50" r="4" fill="#94a3b8"/>
-      </svg>
-      <span class="tool-category">હેન્ડ ટૂલ્સ</span>
-      <div class="tool-title">ટોર્ક રેન્ચ (Torque Wrench)</div>
-      <p class="tool-desc">સિલિન્ડર હેડ અને મેન બેરિંગ કેપ બોલ્ટને ચોક્કસ ટોર્ક સાથે ટાઈટ કરવા વપરાય છે.</p>
-      <div class="memory-tip">💡 **યાદ રાખો:** ચોક્કસ ટોર્ક ટાઈટનિંગ</div>
+  <!-- Interactive Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-hero" id="mIcon"></div>
+      <h2 class="modal-title" id="mTitle"></h2>
+      <span class="modal-cat" id="mCat"></span>
+      <div class="modal-body">
+        <h4>📌 મુખ્ય ઉપયોગ (Primary Application):</h4>
+        <p id="mUsage"></p>
+        <h4>🔧 વર્કશોપ સિમ્યુલેશન ગાઇડ (How to Use):</h4>
+        <p id="mHowTo"></p>
+        <h4>💡 ITI પરીક્ષા માટે યાદ રાખવાની ટ્રીક:</h4>
+        <p id="mTip" style="background:#fef3c7; padding:8px 12px; border-left:4px solid #d97706; border-radius:4px; margin-top:5px;"></p>
+      </div>
     </div>
-
-    <!-- Vernier Caliper -->
-    <div class="tool-card" data-category="measuring">
-      <svg class="svg-icon" viewBox="0 0 100 100">
-        <rect x="10" y="45" width="80" height="10" fill="#94a3b8"/>
-        <path d="M 15 45 L 15 75 L 22 55 L 22 45 Z" fill="#475569"/>
-        <path d="M 15 45 L 15 20 L 22 35 L 22 45 Z" fill="#475569"/>
-        <rect x="35" y="40" width="20" height="20" fill="#0284c7" opacity="0.8"/>
-        <path d="M 40 40 L 40 70 L 45 55 L 45 40 Z" fill="#0284c7"/>
-      </svg>
-      <span class="tool-category">મેઝરિંગ ટૂલ્સ</span>
-      <div class="tool-title">વર્નિયર કેલિપર</div>
-      <p class="tool-desc">અંદરનો વ્યાસ (ID), બહારનો વ્યાસ (OD) અને ઊંડાઈ (Depth) 0.02mm ની ચોકસાઈથી માપવા.</p>
-      <div class="memory-tip">💡 **યાદ રાખો:** Least Count = 0.02 mm</div>
-    </div>
-
-    <!-- Feeler Gauge -->
-    <div class="tool-card" data-category="measuring">
-      <svg class="svg-icon" viewBox="0 0 100 100">
-        <circle cx="30" cy="50" r="8" fill="#334155"/>
-        <path d="M 30 50 L 85 25 L 88 30 L 30 50 Z" fill="#cbd5e1" stroke="#475569"/>
-        <path d="M 30 50 L 88 45 L 89 52 L 30 50 Z" fill="#94a3b8" stroke="#475569"/>
-        <path d="M 30 50 L 80 70 L 82 76 L 30 50 Z" fill="#64748b" stroke="#475569"/>
-      </svg>
-      <span class="tool-category">મેઝરિંગ ટૂલ્સ</span>
-      <div class="tool-title">ફિલર ગેજ (Feeler Gauge)</div>
-      <p class="tool-desc">વાલ્વ ટેપેટ ક્લિયરન્સ અને પિસ્ટન રિંગ એન્ડ ગેપ માપવા માટે વપરાતી પતલી સ્ટીલની પટ્ટીઓ.</p>
-      <div class="memory-tip">💡 **યાદ રાખો:** બે પાર્ટ્સ વચ્ચેની ગેપ માપવી</div>
-    </div>
-
-    <!-- Scriber & Center Punch -->
-    <div class="tool-card" data-category="marking">
-      <svg class="svg-icon" viewBox="0 0 100 100">
-        <path d="M 20 80 L 75 25 L 80 30 L 25 85 Z" fill="#475569"/>
-        <polygon points="15,90 20,80 25,85" fill="#0f172a"/>
-        <path d="M 40 85 L 85 40 L 90 45 L 45 90 Z" fill="#0284c7"/>
-        <polygon points="35,95 40,85 45,90" fill="#0369a1"/>
-      </svg>
-      <span class="tool-category">માર્કિંગ ટૂલ્સ</span>
-      <div class="tool-title">સ્ક્રાઇબર અને સેન્ટર પંચ</div>
-      <p class="tool-desc">ધાતુ પર માર્કિંગ લાઇન દોરવા માટે સ્ક્રાઇબર અને ડ્રિલિંગ સેન્ટર માટે 90° પંચ વપરાય છે.</p>
-      <div class="memory-tip">💡 **યાદ રાખો:** Center Punch = 90° એંગલ</div>
-    </div>
-
-    <!-- Hacksaw -->
-    <div class="tool-card" data-category="cutting">
-      <svg class="svg-icon" viewBox="0 0 100 100">
-        <path d="M 20 60 L 20 30 L 80 30 L 80 50" fill="none" stroke="#dc2626" stroke-width="6"/>
-        <rect x="15" y="55" width="70" height="4" fill="#94a3b8"/>
-        <rect x="75" y="45" width="10" height="25" rx="3" fill="#1e293b"/>
-      </svg>
-      <span class="tool-category">કટિંગ ટૂલ્સ</span>
-      <div class="tool-title">હેક્સો (Hacksaw)</div>
-      <p class="tool-desc">ધાતુના પાઇપ, રોડ અને શીટ કાપવા માટે વપરાય છે. તેના દાંતા ફોરવર્ડ સ્ટ્રોકમાં કાપે છે.</p>
-      <div class="memory-tip">💡 **યાદ રાખો:** Forward Stroke કટિંગ</div>
-    </div>
-
-    <!-- File (રેતી) -->
-    <div class="tool-card" data-category="cutting">
-      <svg class="svg-icon" viewBox="0 0 100 100">
-        <rect x="15" y="45" width="55" height="10" fill="#94a3b8" stroke="#475569"/>
-        <path d="M 70 42 L 90 47 L 90 53 L 70 58 Z" fill="#b45309"/>
-        <line x1="20" y1="45" x2="25" y2="55" stroke="#475569"/>
-        <line x1="30" y1="45" x2="35" y2="55" stroke="#475569"/>
-        <line x1="40" y1="45" x2="45" y2="55" stroke="#475569"/>
-      </svg>
-      <span class="tool-category">કટિંગ ટૂલ્સ</span>
-      <div class="tool-title">ફાઇલ / રેતી (Hand File)</div>
-      <p class="tool-desc">ધાતુની સપાટી પરથી વધારાનું મટીરીયલ ઘસીને દૂર કરવા અને ફિનિશિંગ આપવા વપરાય છે.</p>
-      <div class="memory-tip">💡 **યાદ રાખો:** File Card વડે સફાઈ કરવી</div>
-    </div>
-
   </div>
 
   <footer>
@@ -269,22 +127,234 @@
   </footer>
 
   <script>
-    function filterTools(category, evt) {
-      const cards = document.querySelectorAll('.tool-card');
-      const buttons = document.querySelectorAll('.filter-btn');
+    const toolsData = [
+      // HAND TOOLS
+      {
+        id: 1,
+        title: "ટોર્ક રેન્ચ (Torque Wrench)",
+        category: "Hand Tools",
+        short: "સિલિન્ડર હેડ બોલ્ટ ચોક્કસ ટોર્કથી ટાઈટ કરવા.",
+        usage: "ડીઝલ એન્જિનમાં સિલિન્ડર હેડ, મેન બેરિંગ અને કનેક્ટિંગ રોડ બોલ્ટને ઉત્પાદક દ્વારા નિર્ધારિત ચોક્કસ ટોર્ક (Nm) થી ટાઈટ કરવા.",
+        howto: "ટોર્ક સ્કેલ પર જરૂરી Nm સેટ કરો. બોલ્ટ પર સોકેટ લગાવી કટ-કટ (Click) અવાજ આવે ત્યાં સુધી જ ટાઈટ કરો.",
+        tip: "ક્યારેય આનાથી બોલ્ટ ખોલવા નહીં, માત્ર ટાઈટ કરવા જ વાપરવું.",
+        svg: `<svg viewBox="0 0 100 100"><rect x="10" y="45" width="60" height="10" rx="3" fill="#475569"/><circle cx="15" cy="50" r="10" fill="#1e293b"/><path d="M 70 40 L 90 40 L 90 60 L 70 60 Z" fill="#2563eb"/><circle cx="15" cy="50" r="5" fill="#94a3b8"/></svg>`
+      },
+      {
+        id: 2,
+        title: "રિંગ સ્પેનર (Ring Spanner Set)",
+        category: "Hand Tools",
+        short: "૬ કે ૧૨ ખૂણા વાળા નટ-બોલ્ટને મજબૂત ગ્રીપ આપવા.",
+        usage: "નટ કે બોલ્ટના માથાને ચારે બાજુથી પકડીને સ્લિપ થયા વગર ખોલવા કે ટાઈટ કરવા.",
+        howto: "યોગ્ય સાઈઝનો રિંગ સ્પેનર પસંદ કરો અને નટ પર સંપૂર્ણ બેસાડીને જ બળ લગાવો.",
+        tip: "ઓપન સ્પેનર કરતા રિંગ સ્પેનરની ગ્રીપ વધુ મજબૂત હોય છે.",
+        svg: `<svg viewBox="0 0 100 100"><path d="M 20 50 L 80 50" stroke="#64748b" stroke-width="10"/><circle cx="20" cy="50" r="14" fill="none" stroke="#2563eb" stroke-width="6"/><circle cx="80" cy="50" r="12" fill="none" stroke="#2563eb" stroke-width="6"/></svg>`
+      },
+      {
+        id: 3,
+        title: "સોકેટ અને રેટચેટ (Socket & Ratchet)",
+        category: "Hand Tools",
+        short: "ઓછા સમયમાં ઝડપથી બોલ્ટ ખોલવા/બંધ કરવા.",
+        usage: "ઊંડાણ વાળી જગ્યાએ આવેલા એન્જિન બોલ્ટને વારંવાર સ્પેનર બદલ્યા વગર ઝડપથી ફેરવવા.",
+        howto: "રેટચેટના લીવર વડે ડાયરેક્શન (CW/CCW) સેટ કરો અને સોકેટ ચડાવી વાપરો.",
+        tip: "ઝડપી ઓવરહોલિંગ માટે સૌથી ઉપયોગી ટૂલ.",
+        svg: `<svg viewBox="0 0 100 100"><rect x="20" y="45" width="50" height="10" fill="#334155"/><rect x="70" y="35" width="20" height="30" rx="4" fill="#2563eb"/><circle cx="25" cy="50" r="6" fill="#f59e0b"/></svg>`
+      },
 
-      buttons.forEach(btn => btn.classList.remove('active'));
-      evt.target.classList.add('active');
+      // POWER TOOLS
+      {
+        id: 4,
+        title: "ઇમ્પેક્ટ રેન્ચ (Pneumatic Impact Wrench)",
+        category: "Power Tools",
+        short: "હવાના દબાણ વડે જામ થયેલા બોલ્ટ ક્ષણોમાં ખોલવા.",
+        usage: "વ્હીલ નટ, ફ્લાયવ્હીલ બોલ્ટ કે ભારે ડીઝલ એન્જિનના જામ નટ-બોલ્ટ હાઇ-ટોર્ક સાથે ખોલવા.",
+        howto: "એર કોમ્પ્રેસરની હોસ પાઇપ કનેક્ટ કરો, ગન સોકેટ લગાવી ટ્રિગર પ્રેસ કરો.",
+        tip: "આમાં હંમેશા કાળા કલરના Impact Sockets જ વાપરવા.",
+        svg: `<svg viewBox="0 0 100 100"><path d="M 30 20 L 70 20 L 65 50 L 50 50 L 45 80 L 30 80 Z" fill="#1e293b"/><rect x="70" y="30" width="15" height="15" fill="#dc2626"/></svg>`
+      },
+      {
+        id: 5,
+        title: "એન્ગલ ગ્રાઇન્ડર (Angle Grinder)",
+        category: "Power Tools",
+        short: "ધાતુ કાપવા, વેલ્ડીંગ જોઈન્ટ ઘસવા કે શાર્પ કરવા.",
+        usage: "ધાતુના પાઈપ કાપવા, વધારાનું વેલ્ડીંગ મેટલ સાફ કરવું કે કટિંગ ટૂલ્સને ધાર કાઢવી.",
+        howto: "સેફ્ટી ગાર્ડ અને ગોગલ્સ પહેરીને જ સ્વિચ ઓન કરો.",
+        tip: "ગ્રાઇન્ડિંગ કરતી વખતે હંમેશા આંખના રક્ષણ માટે ગ્લાસ પહેરવા.",
+        svg: `<svg viewBox="0 0 100 100"><rect x="15" y="42" width="50" height="16" fill="#0284c7"/><circle cx="78" cy="50" r="18" fill="none" stroke="#dc2626" stroke-width="6"/></svg>`
+      },
 
-      cards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
+      // MEASURING TOOLS
+      {
+        id: 6,
+        title: "વર્નિયર કેલિપર (Vernier Caliper)",
+        category: "Measuring Tools",
+        short: "બહારનો, અંદરનો વ્યાસ અને ઊંડાઈ 0.02mm ની ચોકસાઈથી માપવા.",
+        usage: "પિસ્ટન ડાયામીટર, લાઇનર આંતરિક વ્યાસ અને પિન બોરની ઊંડાઈ ચકાસવા.",
+        howto: "મેઈન સ્કેલ અને વર્નિયર સ્કેલના કાપા મેચ કરી રીડિંગ લો.",
+        tip: "લઘુત્તમ માપ શક્તિ (Least Count) = 0.02 mm.",
+        svg: `<svg viewBox="0 0 100 100"><rect x="10" y="45" width="80" height="10" fill="#94a3b8"/><path d="M 15 45 L 15 75 L 22 55 L 22 45 Z" fill="#475569"/><rect x="35" y="40" width="20" height="20" fill="#2563eb" opacity="0.8"/></svg>`
+      },
+      {
+        id: 7,
+        title: "આઉટસાઇડ માઇક્રોમીટર (Outside Micrometer)",
+        category: "Measuring Tools",
+        short: "0.01mm ની અતિ ચોકસાઈથી બહારનો વ્યાસ માપવો.",
+        usage: "ક્રેંકશાફ્ટ જર્નલ, વાલ્વ સ્ટેમ અને પિસ્ટન પિનનો વ્યાસ માપવો.",
+        howto: "જોબને એનવિલ અને સ્પિન્ડલ વચ્ચે મૂકી થિમ્બલ અને રેટચેટ સ્ટોપથી માપ લો.",
+        tip: "Least Count = 0.01 mm (૧/૧૦૦ મિલીમીટર).",
+        svg: `<svg viewBox="0 0 100 100"><path d="M 20 30 C 10 50, 10 70, 30 80 L 50 80 C 20 70, 20 50, 50 30 Z" fill="#475569"/><rect x="45" y="50" width="40" height="10" fill="#2563eb"/></svg>`
+      },
+      {
+        id: 8,
+        title: "ફિલર ગેજ (Feeler Gauge)",
+        category: "Measuring Tools",
+        short: "બે પાર્ટ્સ વચ્ચેની બારીક ગૅપ / ક્લિયરન્સ માપવી.",
+        usage: "એન્જિન વાલ્વ ટેપેટ ક્લિયરન્સ અને પિસ્ટન રિંગ એન્ડ ગૅપ માપવી.",
+        howto: "જુદી જુદી જાડાઈની સ્ટીલ બ્લેડ ગૅપમાં સરકાવીને સાચું માપ શોધો.",
+        tip: "ટેપેટ સેટિંગ માટે સૌથી મહત્વનું સાધન.",
+        svg: `<svg viewBox="0 0 100 100"><circle cx="25" cy="50" r="8" fill="#1e293b"/><path d="M 25 50 L 80 25 L 85 30 Z" fill="#cbd5e1" stroke="#475569"/><path d="M 25 50 L 85 48 L 86 54 Z" fill="#94a3b8" stroke="#475569"/></svg>`
+      },
+      {
+        id: 9,
+        title: "ડાયલ ટેસ્ટ ઇન્ડિકેટર (Dial Test Indicator - DTI)",
+        category: "Measuring Tools",
+        short: "શાફ્ટનું રન-આઉટ (ત્રાસ) અને ફ્લેટનેસ માપવી.",
+        usage: "ક્રેંકશાફ્ટ કે કેમશાફ્ટની વાંક (Runout) અને ફ્લાયવ્હીલની સમતલતા ચકાસવી.",
+        howto: "મેગ્નેટિક સ્ટેન્ડ પર ડીટીઆઈ ફિટ કરી પ્લંજરને જોબ પર સેટ કરો અને શાફ્ટ ફેરવો.",
+        tip: "સોયનું વિચલન (Deflection) વાંક દર્શાવે છે.",
+        svg: `<svg viewBox="0 0 100 100"><circle cx="50" cy="40" r="25" fill="#ffffff" stroke="#2563eb" stroke-width="5"/><line x1="50" y1="40" x2="65" y2="30" stroke="#dc2626" stroke-width="3"/><rect x="47" y="65" width="6" height="25" fill="#475569"/></svg>`
+      },
+
+      // MARKING TOOLS
+      {
+        id: 10,
+        title: "સ્ક્રાઇબર (Scriber)",
+        category: "Marking Tools",
+        short: "ધાતુની સપાટી પર ચોક્કસ માર્કિંગ લાઇન દોરવી.",
+        usage: "જોબ પર કટિંગ કે ડ્રિલિંગ કરતા પહેલા સ્ટીલ રૂલની મદદથી તીક્ષ્ણ લાઇન દોરવા.",
+        howto: "પેન્સિલની જેમ પકડીને સ્ટીલ રૂલ સાથે ૩૦° થી ૧૫° ના ખૂણે રાખીને લાઇન દોરો.",
+        tip: "ધાતુની પેન્સિલ (Metal Pencil) તરીકે પણ ઓળખાય છે.",
+        svg: `<svg viewBox="0 0 100 100"><path d="M 15 85 L 80 20 L 85 25 L 20 90 Z" fill="#334155"/><polygon points="10,90 15,85 20,90" fill="#0f172a"/></svg>`
+      },
+      {
+        id: 11,
+        title: "સેન્ટર પંચ (Center Punch 90°)",
+        category: "Marking Tools",
+        short: "ડ્રિલ બીટ સેટ કરવા માટે મોટું સેન્ટર નિશાન બનાવવું.",
+        usage: "ડ્રિલિંગ કરતી વખતે ડ્રિલ બીટ ખસી ન જાય તે માટે ૯૦° નો ખાડો (Indent) પાડવો.",
+        howto: "માર્કિંગ બિંદુ પર પંચ ઊભું રાખી પાછળથી હેમર વડે હળવો ફટકો મારો.",
+        tip: "Center Punch એંગલ = 90°, Dot Punch એંગલ = 60°.",
+        svg: `<svg viewBox="0 0 100 100"><path d="M 40 15 L 60 15 L 55 75 L 45 75 Z" fill="#475569"/><polygon points="45,75 55,75 50,90" fill="#2563eb"/></svg>`
+      },
+
+      // CUTTING TOOLS
+      {
+        id: 12,
+        title: "હેક્સો (Hacksaw Frame & Blade)",
+        category: "Cutting Tools",
+        short: "ધાતુના પાઈપ, શીટ કે રોડ કાપવા.",
+        usage: "વર્કશોપમાં કોઈપણ ધાતુ મટીરીયલને જરૂરી સાઈઝમાં કાપવું.",
+        howto: "બ્લેડના દાંતા આગળ (Forward) રહે તેમ ફિટ કરો. આગળના સ્ટ્રોકમાં જ કટિંગ થશે.",
+        tip: "Forward Stroke માં જ દબાણ આપવું, રીટર્ન સ્ટ્રોકમાં નહી.",
+        svg: `<svg viewBox="0 0 100 100"><path d="M 15 60 L 15 25 L 85 25 L 85 50" fill="none" stroke="#dc2626" stroke-width="8"/><rect x="10" y="58" width="75" height="5" fill="#94a3b8"/></svg>`
+      },
+      {
+        id: 13,
+        title: "ફાઇલ / રેતી (Hand File Set)",
+        category: "Cutting Tools",
+        short: "ધાતુ ઘસીને આકાર આપવો અને સરફેસ ફિનિશિંગ કરવું.",
+        usage: "જોબના તીક્ષ્ણ ખૂણા (Burrs) દૂર કરવા અને ચોક્કસ માપ લાવવા મટીરીયલ ઘસવું.",
+        howto: "ફાઇલને બે હાથે પકડીને સમાંતર ફાઈલિંગ મોશન આપો.",
+        tip: "દાંતા સાફ કરવા File Card વપરાય છે. પિનિંગથી બચવું.",
+        svg: `<svg viewBox="0 0 100 100"><rect x="10" y="45" width="60" height="12" fill="#94a3b8" stroke="#334155"/><path d="M 70 42 L 92 48 L 92 54 L 70 60 Z" fill="#b45309"/></svg>`
+      },
+      {
+        id: 14,
+        title: "ટેપ અને ડાઇ સેટ (Tap & Die Set)",
+        category: "Cutting Tools",
+        short: "અંદરના અને બહારના આંટા (Threads) પાડવા કે રિપેર કરવા.",
+        usage: "ટેપ વડે કાણામાં અંદરના ઈન્ટરનલ આંટા પડે છે અને ડાઈ વડે રોડ/બોલ્ટ પર આઉટર આંટા પડે છે.",
+        howto: "ટેપ રેન્ચમાં ટેપ ફિટ કરી અડધો આટો સીધો અને ચોથા ભાગનો આટો ઊંધો ફેરવી કટિંગ કરો.",
+        tip: "Tap = Internal Thread, Die = External Thread.",
+        svg: `<svg viewBox="0 0 100 100"><rect x="40" y="15" width="20" height="70" fill="#475569"/><line x1="35" y1="30" x2="65" y2="30" stroke="#f59e0b" stroke-width="4"/><line x1="35" y1="45" x2="65" y2="45" stroke="#f59e0b" stroke-width="4"/></svg>`
+      }
+    ];
+
+    let currentCategory = 'all';
+
+    function renderTools() {
+      const grid = document.getElementById('toolsGrid');
+      const search = document.getElementById('searchBox').value.toLowerCase();
+      grid.innerHTML = '';
+
+      const filtered = toolsData.filter(item => {
+        const matchCat = currentCategory === 'all' || item.category === currentCategory;
+        const matchSearch = item.title.toLowerCase().includes(search) || item.short.toLowerCase().includes(search);
+        return matchCat && matchSearch;
+      });
+
+      if(filtered.length === 0) {
+        grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748b; font-size: 1.1rem; padding: 30px;">કોઈ ટૂલ મળ્યું નથી. બીજું નામ શોધો.</p>`;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'tool-card';
+        card.onclick = () => openModal(item);
+        card.innerHTML = `
+          <div class="img-container">${item.svg}</div>
+          <span class="tool-cat">${getCatGujarati(item.category)}</span>
+          <div class="tool-title">${item.title}</div>
+          <p class="tool-short">${item.short}</p>
+        `;
+        grid.appendChild(card);
       });
     }
+
+    function getCatGujarati(cat) {
+      switch(cat) {
+        case 'Hand Tools': return 'હેન્ડ ટૂલ્સ';
+        case 'Power Tools': return 'પાવર ટૂલ્સ';
+        case 'Measuring Tools': return 'મેઝરિંગ ટૂલ્સ';
+        case 'Marking Tools': return 'માર્કિંગ ટૂલ્સ';
+        case 'Cutting Tools': return 'કટિંગ ટૂલ્સ';
+        default: return cat;
+      }
+    }
+
+    function setCategory(cat, evt) {
+      currentCategory = cat;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      evt.target.classList.add('active');
+      renderTools();
+    }
+
+    function filterData() {
+      renderTools();
+    }
+
+    function openModal(item) {
+      document.getElementById('mIcon').innerHTML = item.svg;
+      document.getElementById('mTitle').innerText = item.title;
+      document.getElementById('mCat').innerText = getCatGujarati(item.category);
+      document.getElementById('mUsage').innerText = item.usage;
+      document.getElementById('mHowTo').innerText = item.howto;
+      document.getElementById('mTip').innerText = item.tip;
+      document.getElementById('modalOverlay').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').style.display = 'none';
+    }
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+      const modal = document.getElementById('modalOverlay');
+      if (event.target == modal) { modal.style.display = "none"; }
+    }
+
+    // Initial Render
+    renderTools();
   </script>
 </body>
 </html>
-
