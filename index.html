@@ -1,1 +1,290 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITI મેકેનિક ડીઝલ - ટૂલ્સ વિઝ્યુઅલ સિમ્યુલેટર</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #0284c7;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      color: #64748b;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    /* Author Header Tag */
+    .header-author {
+      display: inline-block;
+      background-color: #dbeafe;
+      color: var(--primary);
+      font-weight: bold;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      border: 1px solid #bfdbfe;
+    }
+
+    /* Filters */
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .filter-btn {
+      background-color: #e2e8f0;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+
+    .filter-btn.active, .filter-btn:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* Grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      flex: 1;
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      border-top: 5px solid var(--secondary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .svg-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 15px;
+    }
+
+    .tool-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 5px 0;
+    }
+
+    .tool-category {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .tool-desc {
+      font-size: 0.95rem;
+      text-align: center;
+      color: #334155;
+      line-height: 1.4;
+    }
+
+    .memory-tip {
+      margin-top: auto;
+      background-color: #fef3c7;
+      border-left: 3px solid #d97706;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 4px;
+      margin-top: 15px;
+    }
+
+    /* Footer Author Credit */
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 15px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🔧 ITI મેકેનિક ડીઝલ - વર્કશોપ ટૂલ્સ એક્સપ્લોરર</h1>
+    <p class="subtitle">વર્ગીકરણ મુજબ ટૂલ્સના એક્યુરેટ ચિત્રો અને ઉપયોગ જુઓ</p>
+    <div class="header-author">👨‍🏫 Created by Yuvrajsinh Kosamia, Mechanic Diesel, ITI Ankleshwar</div>
+  </header>
+
+  <!-- Filter Buttons -->
+  <div class="filter-container">
+    <button class="filter-btn active" onclick="filterTools('all', event)">બધા ટૂલ્સ (All)</button>
+    <button class="filter-btn" onclick="filterTools('hand', event)">હેન્ડ ટૂલ્સ (Hand Tools)</button>
+    <button class="filter-btn" onclick="filterTools('measuring', event)">મેઝરિંગ ટૂલ્સ (Measuring)</button>
+    <button class="filter-btn" onclick="filterTools('marking', event)">માર્કિંગ ટૂલ્સ (Marking)</button>
+    <button class="filter-btn" onclick="filterTools('cutting', event)">કટિંગ ટૂલ્સ (Cutting)</button>
+  </div>
+
+  <!-- Tools Grid -->
+  <div class="tools-grid" id="toolsGrid">
+
+    <!-- Torque Wrench -->
+    <div class="tool-card" data-category="hand">
+      <svg class="svg-icon" viewBox="0 0 100 100">
+        <rect x="15" y="45" width="55" height="10" rx="3" fill="#64748b"/>
+        <circle cx="20" cy="50" r="8" fill="#334155"/>
+        <path d="M 70 42 L 85 42 L 85 58 L 70 58 Z" fill="#0284c7"/>
+        <circle cx="20" cy="50" r="4" fill="#94a3b8"/>
+      </svg>
+      <span class="tool-category">હેન્ડ ટૂલ્સ</span>
+      <div class="tool-title">ટોર્ક રેન્ચ (Torque Wrench)</div>
+      <p class="tool-desc">સિલિન્ડર હેડ અને મેન બેરિંગ કેપ બોલ્ટને ચોક્કસ ટોર્ક સાથે ટાઈટ કરવા વપરાય છે.</p>
+      <div class="memory-tip">💡 **યાદ રાખો:** ચોક્કસ ટોર્ક ટાઈટનિંગ</div>
+    </div>
+
+    <!-- Vernier Caliper -->
+    <div class="tool-card" data-category="measuring">
+      <svg class="svg-icon" viewBox="0 0 100 100">
+        <rect x="10" y="45" width="80" height="10" fill="#94a3b8"/>
+        <path d="M 15 45 L 15 75 L 22 55 L 22 45 Z" fill="#475569"/>
+        <path d="M 15 45 L 15 20 L 22 35 L 22 45 Z" fill="#475569"/>
+        <rect x="35" y="40" width="20" height="20" fill="#0284c7" opacity="0.8"/>
+        <path d="M 40 40 L 40 70 L 45 55 L 45 40 Z" fill="#0284c7"/>
+      </svg>
+      <span class="tool-category">મેઝરિંગ ટૂલ્સ</span>
+      <div class="tool-title">વર્નિયર કેલિપર</div>
+      <p class="tool-desc">અંદરનો વ્યાસ (ID), બહારનો વ્યાસ (OD) અને ઊંડાઈ (Depth) 0.02mm ની ચોકસાઈથી માપવા.</p>
+      <div class="memory-tip">💡 **યાદ રાખો:** Least Count = 0.02 mm</div>
+    </div>
+
+    <!-- Feeler Gauge -->
+    <div class="tool-card" data-category="measuring">
+      <svg class="svg-icon" viewBox="0 0 100 100">
+        <circle cx="30" cy="50" r="8" fill="#334155"/>
+        <path d="M 30 50 L 85 25 L 88 30 L 30 50 Z" fill="#cbd5e1" stroke="#475569"/>
+        <path d="M 30 50 L 88 45 L 89 52 L 30 50 Z" fill="#94a3b8" stroke="#475569"/>
+        <path d="M 30 50 L 80 70 L 82 76 L 30 50 Z" fill="#64748b" stroke="#475569"/>
+      </svg>
+      <span class="tool-category">મેઝરિંગ ટૂલ્સ</span>
+      <div class="tool-title">ફિલર ગેજ (Feeler Gauge)</div>
+      <p class="tool-desc">વાલ્વ ટેપેટ ક્લિયરન્સ અને પિસ્ટન રિંગ એન્ડ ગેપ માપવા માટે વપરાતી પતલી સ્ટીલની પટ્ટીઓ.</p>
+      <div class="memory-tip">💡 **યાદ રાખો:** બે પાર્ટ્સ વચ્ચેની ગેપ માપવી</div>
+    </div>
+
+    <!-- Scriber & Center Punch -->
+    <div class="tool-card" data-category="marking">
+      <svg class="svg-icon" viewBox="0 0 100 100">
+        <path d="M 20 80 L 75 25 L 80 30 L 25 85 Z" fill="#475569"/>
+        <polygon points="15,90 20,80 25,85" fill="#0f172a"/>
+        <path d="M 40 85 L 85 40 L 90 45 L 45 90 Z" fill="#0284c7"/>
+        <polygon points="35,95 40,85 45,90" fill="#0369a1"/>
+      </svg>
+      <span class="tool-category">માર્કિંગ ટૂલ્સ</span>
+      <div class="tool-title">સ્ક્રાઇબર અને સેન્ટર પંચ</div>
+      <p class="tool-desc">ધાતુ પર માર્કિંગ લાઇન દોરવા માટે સ્ક્રાઇબર અને ડ્રિલિંગ સેન્ટર માટે 90° પંચ વપરાય છે.</p>
+      <div class="memory-tip">💡 **યાદ રાખો:** Center Punch = 90° એંગલ</div>
+    </div>
+
+    <!-- Hacksaw -->
+    <div class="tool-card" data-category="cutting">
+      <svg class="svg-icon" viewBox="0 0 100 100">
+        <path d="M 20 60 L 20 30 L 80 30 L 80 50" fill="none" stroke="#dc2626" stroke-width="6"/>
+        <rect x="15" y="55" width="70" height="4" fill="#94a3b8"/>
+        <rect x="75" y="45" width="10" height="25" rx="3" fill="#1e293b"/>
+      </svg>
+      <span class="tool-category">કટિંગ ટૂલ્સ</span>
+      <div class="tool-title">હેક્સો (Hacksaw)</div>
+      <p class="tool-desc">ધાતુના પાઇપ, રોડ અને શીટ કાપવા માટે વપરાય છે. તેના દાંતા ફોરવર્ડ સ્ટ્રોકમાં કાપે છે.</p>
+      <div class="memory-tip">💡 **યાદ રાખો:** Forward Stroke કટિંગ</div>
+    </div>
+
+    <!-- File (રેતી) -->
+    <div class="tool-card" data-category="cutting">
+      <svg class="svg-icon" viewBox="0 0 100 100">
+        <rect x="15" y="45" width="55" height="10" fill="#94a3b8" stroke="#475569"/>
+        <path d="M 70 42 L 90 47 L 90 53 L 70 58 Z" fill="#b45309"/>
+        <line x1="20" y1="45" x2="25" y2="55" stroke="#475569"/>
+        <line x1="30" y1="45" x2="35" y2="55" stroke="#475569"/>
+        <line x1="40" y1="45" x2="45" y2="55" stroke="#475569"/>
+      </svg>
+      <span class="tool-category">કટિંગ ટૂલ્સ</span>
+      <div class="tool-title">ફાઇલ / રેતી (Hand File)</div>
+      <p class="tool-desc">ધાતુની સપાટી પરથી વધારાનું મટીરીયલ ઘસીને દૂર કરવા અને ફિનિશિંગ આપવા વપરાય છે.</p>
+      <div class="memory-tip">💡 **યાદ રાખો:** File Card વડે સફાઈ કરવી</div>
+    </div>
+
+  </div>
+
+  <footer>
+    Created by Yuvrajsinh Kosamia, Mechanic Diesel, ITI Ankleshwar
+  </footer>
+
+  <script>
+    function filterTools(category, evt) {
+      const cards = document.querySelectorAll('.tool-card');
+      const buttons = document.querySelectorAll('.filter-btn');
+
+      buttons.forEach(btn => btn.classList.remove('active'));
+      evt.target.classList.add('active');
+
+      cards.forEach(card => {
+        if (category === 'all' || card.getAttribute('data-category') === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
 
